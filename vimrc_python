@@ -12,58 +12,66 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
-Plugin 'tmhedberg/SimpylFold'
-Plugin 'vim-scripts/indentpython.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'nvie/vim-flake8'
-Plugin 'tomasr/molokai'
-Plugin 'jnurmine/Zenburn'
+Bundle 'Valloric/YouCompleteMe'
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'scrooloose/nerdtree'
+Plugin 'godlygeek/tabular'
+Plugin 'jnurmine/Zenburn'
 Plugin 'kien/ctrlp.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'nvie/vim-flake8'
+Plugin 'rking/ag.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'skwp/greplace.vim'
+Plugin 'tmhedberg/SimpylFold'
+Plugin 'tomasr/molokai'
+Plugin 'tomtom/tcomment_vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
-Plugin 'godlygeek/tabular'
-Plugin 'mattn/emmet-vim'
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Bundle 'Valloric/YouCompleteMe'
-Plugin 'tomtom/tcomment_vim'
-Plugin 'skwp/greplace.vim'
-Plugin 'rking/ag.vim'
+Plugin 'vim-scripts/indentpython.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-let g:NERDTreeHijackNetrw=0
+" Basic settings
+set encoding=utf-8
+
+"" split settings
 set splitbelow
 set splitright
 
-"split navigations
+""" split navigations
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" Enable folding
+abbrev rs vertical resize
+
+"" Enable folding
 set foldmethod=indent
 set foldlevel=99
+" folding tips
+" zc - close 
+" zo - open
+" za - toggle
+" zC - close all
+" zO - open all
+" zM - Create and fold thorough the file
+" zR - remove all the folds
 
-" set line number & relative number
+"" set line number & relative number
 set number
 set relativenumber
-set wildmenu
-set wildmode=list:longest,full
-set ic
-set smartcase
-set autoindent
-set copyindent
-set incsearch
-set hlsearch
 set completeopt-=preview
 
-let g:SimpylFold_docstring_preview=1
+"" indentation
+set autoindent
+set copyindent
 
+"" file base indentation settings
 au BufNewFile,BufRead *.py
     \ set tabstop=4 |
     \ set softtabstop=4 |
@@ -78,20 +86,33 @@ au BufNewFile,BufRead *.js,*.html,*.css
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
 
+"" tab completion 
+set wildmenu
+set wildmode=list:longest,full
+
+"" search settings
+set ic
+set smartcase
+set incsearch
+set hlsearch
+
+" simpylfold settings
+let g:SimpylFold_docstring_preview=1
+
+" highlight trailing whitespaces
 highlight BadWhitespace ctermbg=red guibg=red
-
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
-
 :autocmd ColorScheme * highlight BadWhitespace ctermbg=darkred guibg=darkred
 
-set encoding=utf-8
 
+" YouCompleteMe settings
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 let python_highlight_all=1
 syntax on
 
+" UI settings
 if has("gui_running")
     set cursorline
     colorscheme solarized
@@ -108,12 +129,14 @@ else
     colorscheme zenburn
 endif
 
+" clipboard settings
 set clipboard=unnamed
 
 " nerdtree settings
 map <C-B> :NERDTreeToggle<CR>
 let NERDTreeShowLineNumbers=1
 let NERDTreeShowHidden=1
+let g:NERDTreeHijackNetrw=0
 
 " CtrlP settings
 nnoremap <D-p> :CtrlP<CR>
@@ -121,17 +144,20 @@ nnoremap <D-r> :CtrlPTag<CR>
 let g:ctrlp_working_path_mode='r'
 set wildignore+=*/node_modules/*,*/vendor/*,*/.git/*,*/.hg/*,*/.svn/*
 let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
+abbrev cc CtrlPClearCache
 
 vnoremap < <gv
 vnoremap > >gv
 
-
+" Tabularize settings
 if exists(":Tabularize")
       nmap <Leader>a= :Tabularize /
       vmap <Leader>a= :Tabularize /
 endif
-
-abbrev cc CtrlPClearCache
 abbrev ae Tab /^[^=]*\zs=
 abbrev aa Tab/=>
-abbrev rs vertical resize
+
+
+" Swap file settings
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
