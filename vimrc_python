@@ -1,0 +1,137 @@
+set nocompatible              " required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
+Plugin 'tmhedberg/SimpylFold'
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'nvie/vim-flake8'
+Plugin 'tomasr/molokai'
+Plugin 'jnurmine/Zenburn'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'godlygeek/tabular'
+Plugin 'mattn/emmet-vim'
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'Valloric/YouCompleteMe'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'skwp/greplace.vim'
+Plugin 'rking/ag.vim'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+let g:NERDTreeHijackNetrw=0
+set splitbelow
+set splitright
+
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+
+" set line number & relative number
+set number
+set relativenumber
+set wildmenu
+set wildmode=list:longest,full
+set ic
+set smartcase
+set autoindent
+set copyindent
+set incsearch
+set hlsearch
+set completeopt-=preview
+
+let g:SimpylFold_docstring_preview=1
+
+au BufNewFile,BufRead *.py
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix |
+
+au BufNewFile,BufRead *.js,*.html,*.css
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+
+highlight BadWhitespace ctermbg=red guibg=red
+
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+:autocmd ColorScheme * highlight BadWhitespace ctermbg=darkred guibg=darkred
+
+set encoding=utf-8
+
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+let python_highlight_all=1
+syntax on
+
+if has("gui_running")
+    set cursorline
+    colorscheme solarized
+    " Remove scrollbars
+    set guioptions-=l
+    set guioptions-=L
+    set guioptions-=r
+    set guioptions-=R
+    set guioptions-=e " we don't want gui tabs
+else
+    set cursorline
+    set t_Co=256
+    let g:rehash256=1
+    colorscheme zenburn
+endif
+
+set clipboard=unnamed
+
+" nerdtree settings
+map <C-B> :NERDTreeToggle<CR>
+let NERDTreeShowLineNumbers=1
+let NERDTreeShowHidden=1
+
+" CtrlP settings
+nnoremap <D-p> :CtrlP<CR>
+nnoremap <D-r> :CtrlPTag<CR>
+let g:ctrlp_working_path_mode='r'
+set wildignore+=*/node_modules/*,*/vendor/*,*/.git/*,*/.hg/*,*/.svn/*
+let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
+
+vnoremap < <gv
+vnoremap > >gv
+
+
+if exists(":Tabularize")
+      nmap <Leader>a= :Tabularize /
+      vmap <Leader>a= :Tabularize /
+endif
+
+abbrev cc CtrlPClearCache
+abbrev ae Tab /^[^=]*\zs=
+abbrev aa Tab/=>
+abbrev rs vertical resize
