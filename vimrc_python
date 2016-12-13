@@ -42,6 +42,7 @@ filetype plugin indent on    " required
 
 " Basic settings
 set encoding=utf-8
+let mapleader=" "
 
 "" split settings
 set splitbelow
@@ -181,8 +182,14 @@ nnoremap <Leader>ct :!ctags -R
 	\ --exclude=vendor
 	\<CR>
 
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+" Ultisnips settings - Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<c-l>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
+
+" Ag Configuration"
+set runtimepath^=~/.vim/bundle/ag
+
+" Greplace Configuration
+set grepprg=ag                                                                                " Uses Ag

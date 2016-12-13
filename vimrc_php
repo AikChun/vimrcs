@@ -12,12 +12,12 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
+Bundle 'Valloric/YouCompleteMe'
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'StanAngeloff/php.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'arnaud-lb/vim-php-namespace'
-Plugin 'ervandew/supertab'
 Plugin 'garbas/vim-snipmate'
 Plugin 'godlygeek/tabular'
 Plugin 'jnurmine/Zenburn'
@@ -60,7 +60,7 @@ let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
 set laststatus=2
 
 " Agvimfiles Configuration"
-set runtimepath^=~/vimfiles/bundle/ag
+set runtimepath^=~/.vim/bundle/ag
 
 " Greplacevimfiles Configuration
 set grepprg=ag                                                                                " Uses Ag
@@ -85,10 +85,9 @@ nnoremap <Leader>d :call pdv#DocumentWithSnip()<CR>
 
 " ultisnips configurations
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetsDir="~/vimfiles/snippets"
+let g:UltiSnipsExpandTrigger="<c-l>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " php-cs-fixer
 
@@ -235,7 +234,6 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :qa<CR>
 nnoremap <Leader>s :SearchWord 
 nnoremap <Leader>ev :e $MYVIMRC<CR>
-nnoremap <Leader>es :e ~/vimfiles/snippets/php.snippets<CR>
 nnoremap <Leader>lr :e app/Http/routes.php<CR>G
 
 set pastetoggle=<F5>
