@@ -1,3 +1,4 @@
+set encoding=utf-8
 set nocompatible              " required
 filetype off                  " required
 
@@ -13,16 +14,16 @@ Plugin 'gmarik/Vundle.vim'
 
 " Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
 Bundle 'Valloric/YouCompleteMe'
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plugin 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'godlygeek/tabular'
 Plugin 'jnurmine/Zenburn'
-Plugin 'kien/ctrlp.vim'
+Plugin 'junegunn/seoul256.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'nvie/vim-flake8'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
 Plugin 'skwp/greplace.vim'
 Plugin 'tmhedberg/SimpylFold'
 Plugin 'tomasr/molokai'
@@ -30,8 +31,14 @@ Plugin 'tomtom/tcomment_vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/indentpython.vim'
+Plugin 'AikChun/vim-es6'
+Plugin 'ElmCast/elm-vim'
+Plugin 'elixir-editors/vim-elixir'
 " Track the engine.
 Plugin 'SirVer/ultisnips'
+Plugin 'rakr/vim-one'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'mindriot101/vim-yapf'
 
 " Snippets are separated from the engine. Add this if you want them:
 Plugin 'honza/vim-snippets'
@@ -41,7 +48,6 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 
 " Basic settings
-set encoding=utf-8
 let mapleader=" "
 
 "" split settings
@@ -77,17 +83,21 @@ set completeopt-=preview
 set autoindent
 set copyindent
 
+"" For powerline to show
+set laststatus=2
+set backspace=2
+
 "" file base indentation settings
-au BufNewFile,BufRead *.py
+au BufNewFile,BufRead *.py,*.php,*.elm
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
-    \ set textwidth=79 |
+    \ set textwidth=200 |
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix |
 
-au BufNewFile,BufRead *.js,*.html,*.css
+au BufNewFile,BufRead *.js,*.html,*.css,*.json
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
@@ -110,10 +120,16 @@ highlight BadWhitespace ctermbg=red guibg=red
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 :autocmd ColorScheme * highlight BadWhitespace ctermbg=darkred guibg=darkred
 
+let &colorcolumn=80
+highlight ColorColumn ctermbg=235 guibg=#2c2d27
+
 
 " YouCompleteMe settings
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+ let g:ycm_filetype_specific_completion_to_disable = {
+        \ 'php': 1
+        \}
 
 let python_highlight_all=1
 syntax on
@@ -121,13 +137,16 @@ syntax on
 " UI settings
 if has("gui_running")
     set cursorline
-    colorscheme solarized
+    set background=dark
+    colorscheme one
     " Remove scrollbars
     set guioptions-=l
     set guioptions-=L
     set guioptions-=r
     set guioptions-=R
     set guioptions-=e " we don't want gui tabs
+    " set linespace=12
+
 else
     set cursorline
     set t_Co=256
@@ -154,21 +173,20 @@ set wildignore+=
 	\*/.hg/*,
 	\*/.svn/*,
 	\*/__pycache__/*,
-	\*/tags
+	\*/tags,
+	\*.gz,
+	\*/mkdocs/*,
+	\*/wit-docs/*,
+	\*/witenv/*,
+	\*/.github/*,
+	\*/.vagrant/*,
+	\*/staticfiles/*
+
 let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
-abbrev cc CtrlPClearCache
+abbrev cpcc CtrlPClearCache
 
 vnoremap < <gv
 vnoremap > >gv
-
-" Tabularize settings
-if exists(":Tabularize")
-      nmap <Leader>a= :Tabularize /
-      vmap <Leader>a= :Tabularize /
-endif
-abbrev ae Tab /^[^=]*\zs=
-abbrev aa Tab/=>
-
 
 " Swap file settings
 set backupdir=~/.vim/backup//
@@ -180,16 +198,75 @@ nnoremap <Leader>ct :!ctags -R
 	\ --exclude=__pycache__
 	\ --exclude=.git
 	\ --exclude=vendor
+	\ --exclude=staticfiles
+	\ --exclude=static
+	\ --exclude=mkdocs
+	\ --exclude=witenv
+	\ --exclude=wit-docs
 	\<CR>
 
+" YCM settings
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_use_ultisnips_completer = 1 " Default 1, just ensure
+
 " Ultisnips settings - Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<c-l>"
+let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
+let g:UltiSnipsListSnippets="<c-l>"
 
 " Ag Configuration"
 set runtimepath^=~/.vim/bundle/ag
 
 " Greplace Configuration
 set grepprg=ag                                                                                " Uses Ag
+
+let g:yapf_style = "pep8"
+" auto run flake8 when writing python files
+" autocmd BufWritePost *.py call Flake8()
+autocmd BufWritePost *.py call Yapf()
+nnoremap <Leader>p :!pep257 %<cr>
+
+" quick open vimrc
+nnoremap <Leader>ev :tabe ~/.vimrc<CR>
+
+" quick run of python test
+nnoremap <Leader>t :!python manage.py test<cr>
+
+" list and goto buffers
+nnoremap <Leader>b :ls<cr>:b
+
+" Close fix window
+nnoremap <silent><Leader>cc :cclose<cr>
+
+let g:ctrlp_buffer_func = {
+    \ 'enter': 'Function_Name_1',
+    \ 'exit':  'Function_Name_2',
+    \ }
+
+func! Function_Name_1()
+    set laststatus=0
+endfunc
+
+func! Function_Name_2()
+    set laststatus=2
+endfunc
+
+
+let g:ctrlp_extensions = ['tag']
+
+let g:user_emmet_settings = {
+\  'javascript' : {
+\      'extends' : 'jsx',
+\  },
+\}
+
+autocmd FileType *.py UltiSnipsAddFiletypes django
+
+set noerrorbells 
+set novisualbell
+set t_vb=
+autocmd! GUIEnter * set vb t_vb=
+
+" configure vim-test for python 
+let test#python#runner = 'nose'
